@@ -1,0 +1,66 @@
+Host = myers-pc-2 my
+# HostName = myers-pc-2
+HostName = 10.1.202.36
+Cipher = arcfour
+# Ciphers = arcfour
+User = broaddus
+RemoteForward 52699 localhost:52699
+LocalForward 8998 10.1.202.36:8998
+LocalForward 8999 10.1.202.36:8999
+LocalForward 6006 10.1.202.36:6006
+
+Host = myx
+# HostName = myers-pc-2
+HostName = 10.1.202.36
+Cipher = arcfour
+#Ciphers = arcfour
+User = broaddus
+RemoteForward 52699 localhost:52699
+LocalForward 8998 10.1.202.36:8998
+LocalForward 8999 10.1.202.36:8999
+LocalForward 6006 10.1.202.36:6006
+ForwardX11 yes
+ForwardX11Trusted yes
+
+Host = fal
+HostName = 10.1.4.13
+Cipher = arcfour
+#Ciphers = arcfour
+User = broaddus
+RemoteForward 52699 localhost:52699
+LocalForward 8998 10.1.202.36:8998
+LocalForward 8999 10.1.202.36:8999
+LocalForward 6006 10.1.202.36:6006
+
+Host = login-srv1
+HostName = login-srv1.mpi-cbg.de
+User = broaddus
+
+Host = efal
+ProxyCommand ssh -q login-srv1 nc -q0 10.1.4.13 22
+HostName = 10.1.4.13
+Cipher = arcfour
+#Ciphers = arcfour
+User = broaddus
+RemoteForward 52699 localhost:52699
+LocalForward 8998 10.1.202.36:8998
+LocalForward 8999 10.1.202.36:8999
+LocalForward 6006 10.1.202.36:6006
+LocalForward 8888 10.1.202.36:8888
+
+Host = emy
+ProxyCommand ssh -q login-srv1 nc -q0 10.1.202.36 22
+RemoteForward 52699 localhost:52699
+LocalForward 8998 10.1.202.36:8998
+LocalForward 8999 10.1.202.36:8999
+LocalForward 6006 10.1.202.36:6006
+
+Host = emyx
+ProxyCommand ssh -q login-srv1 nc -q0 10.1.202.36 22
+RemoteForward 52699 localhost:52699
+LocalForward 8998 10.1.202.36:8998
+LocalForward 8999 10.1.202.36:8999
+LocalForward 6006 10.1.202.36:6006
+ForwardX11 yes
+ForwardX11Trusted yes
+
