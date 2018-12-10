@@ -28,6 +28,12 @@ The only important commands are:
 - `scancel <jobid>`
 - and `srun <lots of args>`
 
+# Datagen | Train | Predict ... Organizing python scipts 
+
+`fly_predict.py` is both a function callable from iPython, and a standalone executable script.
+
+
+
 # The `srun` command
 
 Here are some examples...
@@ -83,12 +89,28 @@ I don't know how to use python2. Don't use python2.
 
 You want to add the following lines:
 
-```
+```bash
 module load gcc/6.2.0
 module load cuda/9.0.176
 ```
 
 This version of cuda currently ^[Fri Nov 23 14:21:11 2018] works with the current/default Tensorflow`1.9.0` on the cluster.
+
+And while you're at it you may as well add these lines too:
+
+```bash
+alias ipython='ipython3 --matplotlib=Agg'
+alias rsub='rsub --port 52699'
+```
+
+This way you can use matplotlib from the cluster! (Does this work with -X forwarding? I don't know.)
+Why do people use matplotlib anyways when working with images? I don't know.
+Just move the data to your local machine and do plotting there...
+
+# Moving data to your local machine
+
+You can access your project directory in finder via smb (described above), but if you want to work from home this is unbearably slow, so use `rsync` instead!
+If you're using Uwe's `~/.ssh/config` then all this requires is a simple call like `rsuync`
 
 # Use sublime (the best editor)
 
