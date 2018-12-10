@@ -1,25 +1,20 @@
 ---
 title: "Deep Learning on the Cluster"
-author: [Coleman Broaddus]
-date: "2018-11-23"
-fontsize: 10pt
-links-as-notes: true
+# author: [Coleman Broaddus]
+# date: "2018-11-23"
+# links-as-notes: true
 ---
 
-<!-- build command: -->
-<!-- pandoc dl_cluster.md --template eisvogel -o example.pdf -->
-
-# Get a project space on `lustre/` filesystem
+## Get a project space on `lustre/` filesystem
 
 Step 1: Ask Oscar or Juraj (pronounced "You-Rei") for a project space.
 It will be something like `/lustre/projects/project-<yourname>/`.
-You can access it from your local machine with Finder via `Cmd-K` and connecting to `smb://mack.mpi-cbg.de/projects/project-<yourname>/`
-Or by logging on to falcon and `cd`-ing there.
+You can access it from your local machine with Finder via `Cmd-K` and connecting to `smb://mack.mpi-cbg.de/projects/project-<yourname>/`.
+Or just by logging on to falcon and `cd`-ing there.
 
-# Scientific Computing Wiki
+## Scientific Computing Wiki
 
-Go here: https://wiki.mpi-cbg.de/scicomp/HPC
-Read the section "Getting Started with HPC"
+Go [here](https://wiki.mpi-cbg.de/scicomp/HPC). Read the section "Getting Started with HPC".
 
 The only important commands are:
 
@@ -28,13 +23,21 @@ The only important commands are:
 - `scancel <jobid>`
 - and `srun <lots of args>`
 
-# Datagen | Train | Predict ... Organizing python scipts 
+## Organizing python scipts 
 
-`fly_predict.py` is both a function callable from iPython, and a standalone executable script.
+Datagen | Train | Predict  
 
+There is only one objective way of optimally separating these concerns, and that is to make three separate scripts for these three separate tasks.
+Each script should be runnable by itself with no args from the command line, so that in 6 months when you forget what the hell it is supposed to do you can at least figure out if it's broken or not.
+This also makes it really easy to run in batch mode via `srun`.
 
+Naming examples:
 
-# The `srun` command
+`fly_datagen.py`, `fly_train.py`, and `fly_predict.py`.
+
+Should be both importable with a main method and callable from the command line.
+
+## The `srun` command
 
 Here are some examples...
 
@@ -58,14 +61,14 @@ Go to the scientific computing wiki to figure out what all the command line args
 - `--time ` maximum job time (after this time your job is killed)
 - `--pty` makes your job interactive
 
-# Submitting multiple jobs
+## Submitting multiple jobs
 
 Just call the `srun` command multiple times.
 The submission system will figure out how to allocate the jobs onto the available nodes.
 Write a for loop in python that will print the command with the various args.
 Copy and paste the commands into your terminal.
 
-# Accessing your data on the fileserver
+## Accessing your data on the fileserver
 
 If you're on falcon you can just do `/fileserver/myersspimdata/`.
 But that's not gonna work if you're running a job on one of the GPU nodes!
@@ -79,13 +82,13 @@ csbdeep       = Path("/lustre/projects/CSBDeep/ISBI/")
 
 just put these names in your project's `utils.py` or something...
 
-# Installing python stuff
+## Installing python stuff
 
 First git clone the repository you want to install.
 Then use `pip3 install --user -e <dir>` to install the repo in editable mode.
 I don't know how to use python2. Don't use python2.
 
-# Setting up your `.bashrc`
+## Setting up your `.bashrc`
 
 You want to add the following lines:
 
@@ -94,7 +97,7 @@ module load gcc/6.2.0
 module load cuda/9.0.176
 ```
 
-This version of cuda currently ^[Fri Nov 23 14:21:11 2018] works with the current/default Tensorflow`1.9.0` on the cluster.
+This version of cuda currently ^[Fri Nov 23 14:21:11 2018] works with the current/default Tensorflow1.9.0 on the cluster.
 
 And while you're at it you may as well add these lines too:
 
@@ -107,16 +110,18 @@ This way you can use matplotlib from the cluster! (Does this work with -X forwar
 Why do people use matplotlib anyways when working with images? I don't know.
 Just move the data to your local machine and do plotting there...
 
-# Moving data to your local machine
+## Moving data to your local machine
 
 You can access your project directory in finder via smb (described above), but if you want to work from home this is unbearably slow, so use `rsync` instead!
 If you're using Uwe's `~/.ssh/config` then all this requires is a simple call like `rsuync`
 
-# Use sublime (the best editor)
+## Use sublime (the best editor)
 
-Go here and follow instructions for using `rsub` https://stackoverflow.com/questions/37458814/how-to-open-remote-files-in-sublime-text-3
+Go [here](https://stackoverflow.com/questions/37458814/how-to-open-remote-files-in-sublime-text-3) and follow instructions for using `rsub`.
 Then you can simply login to falcon like `ssh falcon` (assuming you're at work, not at home, and using ethernet!)
 
-# Steal Uwe's `~/.ssh/config`
+## Steal Uwe's `~/.ssh/config`
+
+Steal it. It's [here](config). But change the names, duh.
 
 It will let you login to the cluster from home with the simple command `ssh efal` and it will automatically connect `rsub` to sublime with proper port forwarding!

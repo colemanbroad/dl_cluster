@@ -1,9 +1,58 @@
-<!-- build command: -->
-<!-- pandoc dl_cluster.md --template eisvogel -o example.pdf -->
-<h1 id="get-a-project-space-on-lustre-filesystem">Get a project space on <code>lustre/</code> filesystem</h1>
-<p>Step 1: Ask Oscar or Juraj (pronounced &quot;You-Rei&quot;) for a project space. It will be something like <code>/lustre/projects/project-&lt;yourname&gt;/</code>. You can access it from your local machine with Finder via <code>Cmd-K</code> and connecting to <code>smb://mack.mpi-cbg.de/projects/project-&lt;yourname&gt;/</code> Or by logging on to falcon and <code>cd</code>-ing there.</p>
-<h1 id="scientific-computing-wiki">Scientific Computing Wiki</h1>
-<p>Go here: https://wiki.mpi-cbg.de/scicomp/HPC Read the section &quot;Getting Started with HPC&quot;</p>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Deep Learning on the Cluster</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="gh-md.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">Deep Learning on the Cluster</h1>
+</div>
+<h2 id="get-a-project-space-on-lustre-filesystem">Get a project space on <code>lustre/</code> filesystem</h2>
+<p>Step 1: Ask Oscar or Juraj (pronounced &quot;You-Rei&quot;) for a project space. It will be something like <code>/lustre/projects/project-&lt;yourname&gt;/</code>. You can access it from your local machine with Finder via <code>Cmd-K</code> and connecting to <code>smb://mack.mpi-cbg.de/projects/project-&lt;yourname&gt;/</code>. Or just by logging on to falcon and <code>cd</code>-ing there.</p>
+<h2 id="scientific-computing-wiki">Scientific Computing Wiki</h2>
+<p>Go <a href="https://wiki.mpi-cbg.de/scicomp/HPC">here</a>. Read the section &quot;Getting Started with HPC&quot;.</p>
 <p>The only important commands are:</p>
 <ul>
 <li><code>queue_summary</code></li>
@@ -11,9 +60,13 @@
 <li><code>scancel &lt;jobid&gt;</code></li>
 <li>and <code>srun &lt;lots of args&gt;</code></li>
 </ul>
-<h1 id="datagen-train-predict-...-organizing-python-scipts">Datagen | Train | Predict ... Organizing python scipts</h1>
-<p><code>fly_predict.py</code> is both a function callable from iPython, and a standalone executable script.</p>
-<h1 id="the-srun-command">The <code>srun</code> command</h1>
+<h2 id="organizing-python-scipts">Organizing python scipts</h2>
+<p>Datagen | Train | Predict</p>
+<p>There is only one objective way of optimally separating these concerns, and that is to make three separate scripts for these three separate tasks. Each script should be runnable by itself with no args from the command line, so that in 6 months when you forget what the hell it is supposed to do you can at least figure out if it's broken or not. This also makes it really easy to run in batch mode via <code>srun</code>.</p>
+<p>Naming examples:</p>
+<p><code>fly_datagen.py</code>, <code>fly_train.py</code>, and <code>fly_predict.py</code>.</p>
+<p>Should be both importable with a main method and callable from the command line.</p>
+<h2 id="the-srun-command">The <code>srun</code> command</h2>
 <p>Here are some examples...</p>
 <p>A batch job (non-interactive) runs the command <code>time python3 fly_predict.py</code>:</p>
 <p><code>srun -J predict1 -n 1 -c 1 --mem=128000 -p gpu --gres=gpu:1 --time=12:00:00 -e std.err -o std.out time python3 fly_predict.py &amp;</code></p>
@@ -29,30 +82,31 @@
 <li><code>--time</code> maximum job time (after this time your job is killed)</li>
 <li><code>--pty</code> makes your job interactive</li>
 </ul>
-<h1 id="submitting-multiple-jobs">Submitting multiple jobs</h1>
+<h2 id="submitting-multiple-jobs">Submitting multiple jobs</h2>
 <p>Just call the <code>srun</code> command multiple times. The submission system will figure out how to allocate the jobs onto the available nodes. Write a for loop in python that will print the command with the various args. Copy and paste the commands into your terminal.</p>
-<h1 id="accessing-your-data-on-the-fileserver">Accessing your data on the fileserver</h1>
+<h2 id="accessing-your-data-on-the-fileserver">Accessing your data on the fileserver</h2>
 <p>If you're on falcon you can just do <code>/fileserver/myersspimdata/</code>. But that's not gonna work if you're running a job on one of the GPU nodes! Then you need to use these secret paths...</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">myersspimdata <span class="op">=</span> Path(<span class="st">&quot;/net/fileserver-nfs/stornext/snfs2/projects/myersspimdata/&quot;</span>)
 greencarpet   <span class="op">=</span> Path(<span class="st">&quot;/net/fileserver-nfs/stornext/snfs4/projects/green-carpet/&quot;</span>)
 csbdeep       <span class="op">=</span> Path(<span class="st">&quot;/lustre/projects/CSBDeep/ISBI/&quot;</span>)</code></pre></div>
 <p>just put these names in your project's <code>utils.py</code> or something...</p>
-<h1 id="installing-python-stuff">Installing python stuff</h1>
+<h2 id="installing-python-stuff">Installing python stuff</h2>
 <p>First git clone the repository you want to install. Then use <code>pip3 install --user -e &lt;dir&gt;</code> to install the repo in editable mode. I don't know how to use python2. Don't use python2.</p>
-<h1 id="setting-up-your-.bashrc">Setting up your <code>.bashrc</code></h1>
+<h2 id="setting-up-your-.bashrc">Setting up your <code>.bashrc</code></h2>
 <p>You want to add the following lines:</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">module</span> load gcc/6.2.0
 <span class="ex">module</span> load cuda/9.0.176</code></pre></div>
-<p>This version of cuda currently <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> works with the current/default Tensorflow<code>1.9.0</code> on the cluster.</p>
+<p>This version of cuda currently <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> works with the current/default Tensorflow1.9.0 on the cluster.</p>
 <p>And while you're at it you may as well add these lines too:</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="bu">alias</span> ipython=<span class="st">&#39;ipython3 --matplotlib=Agg&#39;</span>
 <span class="bu">alias</span> rsub=<span class="st">&#39;rsub --port 52699&#39;</span></code></pre></div>
 <p>This way you can use matplotlib from the cluster! (Does this work with -X forwarding? I don't know.) Why do people use matplotlib anyways when working with images? I don't know. Just move the data to your local machine and do plotting there...</p>
-<h1 id="moving-data-to-your-local-machine">Moving data to your local machine</h1>
+<h2 id="moving-data-to-your-local-machine">Moving data to your local machine</h2>
 <p>You can access your project directory in finder via smb (described above), but if you want to work from home this is unbearably slow, so use <code>rsync</code> instead! If you're using Uwe's <code>~/.ssh/config</code> then all this requires is a simple call like <code>rsuync</code></p>
-<h1 id="use-sublime-the-best-editor">Use sublime (the best editor)</h1>
-<p>Go here and follow instructions for using <code>rsub</code> https://stackoverflow.com/questions/37458814/how-to-open-remote-files-in-sublime-text-3 Then you can simply login to falcon like <code>ssh falcon</code> (assuming you're at work, not at home, and using ethernet!)</p>
-<h1 id="steal-uwes-.sshconfig">Steal Uwe's <code>~/.ssh/config</code></h1>
+<h2 id="use-sublime-the-best-editor">Use sublime (the best editor)</h2>
+<p>Go <a href="https://stackoverflow.com/questions/37458814/how-to-open-remote-files-in-sublime-text-3">here</a> and follow instructions for using <code>rsub</code>. Then you can simply login to falcon like <code>ssh falcon</code> (assuming you're at work, not at home, and using ethernet!)</p>
+<h2 id="steal-uwes-.sshconfig">Steal Uwe's <code>~/.ssh/config</code></h2>
+<p>Steal it. It's <a href="config">here</a>. But change the names, duh.</p>
 <p>It will let you login to the cluster from home with the simple command <code>ssh efal</code> and it will automatically connect <code>rsub</code> to sublime with proper port forwarding!</p>
 <div class="footnotes">
 <hr />
@@ -60,3 +114,5 @@ csbdeep       <span class="op">=</span> Path(<span class="st">&quot;/lustre/proj
 <li id="fn1"><p>Fri Nov 23 14:21:11 2018<a href="#fnref1">↩</a></p></li>
 </ol>
 </div>
+</body>
+</html>
