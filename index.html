@@ -1,0 +1,62 @@
+<!-- build command: -->
+<!-- pandoc dl_cluster.md --template eisvogel -o example.pdf -->
+<h1 id="get-a-project-space-on-lustre-filesystem">Get a project space on <code>lustre/</code> filesystem</h1>
+<p>Step 1: Ask Oscar or Juraj (pronounced &quot;You-Rei&quot;) for a project space. It will be something like <code>/lustre/projects/project-&lt;yourname&gt;/</code>. You can access it from your local machine with Finder via <code>Cmd-K</code> and connecting to <code>smb://mack.mpi-cbg.de/projects/project-&lt;yourname&gt;/</code> Or by logging on to falcon and <code>cd</code>-ing there.</p>
+<h1 id="scientific-computing-wiki">Scientific Computing Wiki</h1>
+<p>Go here: https://wiki.mpi-cbg.de/scicomp/HPC Read the section &quot;Getting Started with HPC&quot;</p>
+<p>The only important commands are:</p>
+<ul>
+<li><code>queue_summary</code></li>
+<li><code>squeue -u &lt;yourname&gt;</code></li>
+<li><code>scancel &lt;jobid&gt;</code></li>
+<li>and <code>srun &lt;lots of args&gt;</code></li>
+</ul>
+<h1 id="datagen-train-predict-...-organizing-python-scipts">Datagen | Train | Predict ... Organizing python scipts</h1>
+<p><code>fly_predict.py</code> is both a function callable from iPython, and a standalone executable script.</p>
+<h1 id="the-srun-command">The <code>srun</code> command</h1>
+<p>Here are some examples...</p>
+<p>A batch job (non-interactive) runs the command <code>time python3 fly_predict.py</code>:</p>
+<p><code>srun -J predict1 -n 1 -c 1 --mem=128000 -p gpu --gres=gpu:1 --time=12:00:00 -e std.err -o std.out time python3 fly_predict.py &amp;</code></p>
+<p>NOTE: The ampersand (<code>&amp;</code>) prevents you from getting trapped inside the srun command!</p>
+<p>If you want to open an ipython session on a GPU node then you need to run and interactive job. This is done with the same command as above, but adding the <code>--pty</code> flag and running <code>bash</code> as your command ala...</p>
+<p><code>srun --pty -n 1 -c 1 --mem 128000 -p gpu --gres gpu:1 --time 12:00:00 bash</code></p>
+<p>Go to the scientific computing wiki to figure out what all the command line args do...</p>
+<ul>
+<li><code>-n</code> number of nodes</li>
+<li><code>-c</code> number of CPU cores per node</li>
+<li><code>-p</code> which partition (GPU)</li>
+<li><code>--gres gpu:1</code> Just because you've requested the GPU partition doesn't mean you get a GPU! Add this to actually request a &quot;gpu resource&quot;</li>
+<li><code>--time</code> maximum job time (after this time your job is killed)</li>
+<li><code>--pty</code> makes your job interactive</li>
+</ul>
+<h1 id="submitting-multiple-jobs">Submitting multiple jobs</h1>
+<p>Just call the <code>srun</code> command multiple times. The submission system will figure out how to allocate the jobs onto the available nodes. Write a for loop in python that will print the command with the various args. Copy and paste the commands into your terminal.</p>
+<h1 id="accessing-your-data-on-the-fileserver">Accessing your data on the fileserver</h1>
+<p>If you're on falcon you can just do <code>/fileserver/myersspimdata/</code>. But that's not gonna work if you're running a job on one of the GPU nodes! Then you need to use these secret paths...</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">myersspimdata <span class="op">=</span> Path(<span class="st">&quot;/net/fileserver-nfs/stornext/snfs2/projects/myersspimdata/&quot;</span>)
+greencarpet   <span class="op">=</span> Path(<span class="st">&quot;/net/fileserver-nfs/stornext/snfs4/projects/green-carpet/&quot;</span>)
+csbdeep       <span class="op">=</span> Path(<span class="st">&quot;/lustre/projects/CSBDeep/ISBI/&quot;</span>)</code></pre></div>
+<p>just put these names in your project's <code>utils.py</code> or something...</p>
+<h1 id="installing-python-stuff">Installing python stuff</h1>
+<p>First git clone the repository you want to install. Then use <code>pip3 install --user -e &lt;dir&gt;</code> to install the repo in editable mode. I don't know how to use python2. Don't use python2.</p>
+<h1 id="setting-up-your-.bashrc">Setting up your <code>.bashrc</code></h1>
+<p>You want to add the following lines:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">module</span> load gcc/6.2.0
+<span class="ex">module</span> load cuda/9.0.176</code></pre></div>
+<p>This version of cuda currently <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> works with the current/default Tensorflow<code>1.9.0</code> on the cluster.</p>
+<p>And while you're at it you may as well add these lines too:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="bu">alias</span> ipython=<span class="st">&#39;ipython3 --matplotlib=Agg&#39;</span>
+<span class="bu">alias</span> rsub=<span class="st">&#39;rsub --port 52699&#39;</span></code></pre></div>
+<p>This way you can use matplotlib from the cluster! (Does this work with -X forwarding? I don't know.) Why do people use matplotlib anyways when working with images? I don't know. Just move the data to your local machine and do plotting there...</p>
+<h1 id="moving-data-to-your-local-machine">Moving data to your local machine</h1>
+<p>You can access your project directory in finder via smb (described above), but if you want to work from home this is unbearably slow, so use <code>rsync</code> instead! If you're using Uwe's <code>~/.ssh/config</code> then all this requires is a simple call like <code>rsuync</code></p>
+<h1 id="use-sublime-the-best-editor">Use sublime (the best editor)</h1>
+<p>Go here and follow instructions for using <code>rsub</code> https://stackoverflow.com/questions/37458814/how-to-open-remote-files-in-sublime-text-3 Then you can simply login to falcon like <code>ssh falcon</code> (assuming you're at work, not at home, and using ethernet!)</p>
+<h1 id="steal-uwes-.sshconfig">Steal Uwe's <code>~/.ssh/config</code></h1>
+<p>It will let you login to the cluster from home with the simple command <code>ssh efal</code> and it will automatically connect <code>rsub</code> to sublime with proper port forwarding!</p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Fri Nov 23 14:21:11 2018<a href="#fnref1">↩</a></p></li>
+</ol>
+</div>
