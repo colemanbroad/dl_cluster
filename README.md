@@ -23,20 +23,6 @@ The only important commands are:
 - `scancel <jobid>`
 - and `srun <lots of args>`
 
-## Organizing python scipts 
-
-Datagen | Train | Predict  
-
-There is only one objective way of optimally separating these concerns, and that is to make three separate scripts for these three separate tasks.
-Each script should be runnable by itself with no args from the command line, so that in 6 months when you forget what the hell it is supposed to do you can at least figure out if it's broken or not.
-This also makes it really easy to run in batch mode via `srun`.
-
-Naming examples:
-
-`fly_datagen.py`, `fly_train.py`, and `fly_predict.py`.
-
-Should be both importable with a main method and callable from the command line.
-
 ## The `srun` command
 
 Here are some examples...
@@ -109,6 +95,20 @@ alias rsub='rsub --port 52699'
 This way you can use matplotlib from the cluster! (Does this work with -X forwarding? I don't know.)
 Why do people use matplotlib anyways when working with images? I don't know.
 Just move the data to your local machine and do plotting there...
+
+## Organizing python scipts 
+
+Datagen | Train | Predict  
+
+There is only one objective way of optimally separating these concerns, and that is to make three separate scripts for these three separate tasks.
+Each script should be runnable by itself with no args from the command line, so that in 6 months when you forget what the hell it is supposed to do you can at least figure out if it's broken or not.
+This also makes it really easy to run in batch mode via `srun`.
+
+Naming examples:
+
+`fly_datagen.py`, `fly_train.py`, and `fly_predict.py`.
+
+Should be both importable with a main method and callable from the command line.
 
 ## Moving data to your local machine
 

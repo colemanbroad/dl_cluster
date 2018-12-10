@@ -60,12 +60,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><code>scancel &lt;jobid&gt;</code></li>
 <li>and <code>srun &lt;lots of args&gt;</code></li>
 </ul>
-<h2 id="organizing-python-scipts">Organizing python scipts</h2>
-<p>Datagen | Train | Predict</p>
-<p>There is only one objective way of optimally separating these concerns, and that is to make three separate scripts for these three separate tasks. Each script should be runnable by itself with no args from the command line, so that in 6 months when you forget what the hell it is supposed to do you can at least figure out if it's broken or not. This also makes it really easy to run in batch mode via <code>srun</code>.</p>
-<p>Naming examples:</p>
-<p><code>fly_datagen.py</code>, <code>fly_train.py</code>, and <code>fly_predict.py</code>.</p>
-<p>Should be both importable with a main method and callable from the command line.</p>
 <h2 id="the-srun-command">The <code>srun</code> command</h2>
 <p>Here are some examples...</p>
 <p>A batch job (non-interactive) runs the command <code>time python3 fly_predict.py</code>:</p>
@@ -101,6 +95,12 @@ csbdeep       <span class="op">=</span> Path(<span class="st">&quot;/lustre/proj
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="bu">alias</span> ipython=<span class="st">&#39;ipython3 --matplotlib=Agg&#39;</span>
 <span class="bu">alias</span> rsub=<span class="st">&#39;rsub --port 52699&#39;</span></code></pre></div>
 <p>This way you can use matplotlib from the cluster! (Does this work with -X forwarding? I don't know.) Why do people use matplotlib anyways when working with images? I don't know. Just move the data to your local machine and do plotting there...</p>
+<h2 id="organizing-python-scipts">Organizing python scipts</h2>
+<p>Datagen | Train | Predict</p>
+<p>There is only one objective way of optimally separating these concerns, and that is to make three separate scripts for these three separate tasks. Each script should be runnable by itself with no args from the command line, so that in 6 months when you forget what the hell it is supposed to do you can at least figure out if it's broken or not. This also makes it really easy to run in batch mode via <code>srun</code>.</p>
+<p>Naming examples:</p>
+<p><code>fly_datagen.py</code>, <code>fly_train.py</code>, and <code>fly_predict.py</code>.</p>
+<p>Should be both importable with a main method and callable from the command line.</p>
 <h2 id="moving-data-to-your-local-machine">Moving data to your local machine</h2>
 <p>You can access your project directory in finder via smb (described above), but if you want to work from home this is unbearably slow, so use <code>rsync</code> instead! If you're using Uwe's <code>~/.ssh/config</code> then all this requires is a simple call like <code>rsuync</code></p>
 <h2 id="use-sublime-the-best-editor">Use sublime (the best editor)</h2>
