@@ -1,9 +1,14 @@
 ---
-title: "Deep Learning on the Cluster"
+# title: "Deep Learning on the Cluster"
 # author: [Coleman Broaddus]
 # date: "2018-11-23"
 # links-as-notes: true
+# stylesheet: gh-md.css
 ---
+
+<head> <link rel="stylesheet" type="text/css" href="gh-md.css"> </head>
+
+# Deep Learning on the Cluster
 
 ## Get a project space on `lustre/` filesystem
 

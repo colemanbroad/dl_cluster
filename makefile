@@ -1,2 +1,2 @@
 all:
-	pandoc README.md -s --css gh-md.css -o docs/index.html
+	pandoc README.md -o docs/index.html
