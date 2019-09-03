@@ -1,9 +1,9 @@
 ---
-# title: "Deep Learning on the Cluster"
-# author: [Coleman Broaddus]
-# date: "2018-11-23"
-# links-as-notes: true
-# stylesheet: gh-md.css
+title: "Deep Learning on the Cluster"
+author: [Coleman Broaddus]
+date: "2018-11-23"
+links-as-notes: true
+stylesheet: gh-md.css
 ---
 
 <head> <link rel="stylesheet" type="text/css" href="gh-md.css"> </head>
@@ -72,6 +72,10 @@ csbdeep       = Path("/lustre/projects/CSBDeep/ISBI/")
 ```
 
 just put these names in your project's `utils.py` or something...
+
+## Using Tensorboard
+
+
 
 ## Installing python stuff
 
